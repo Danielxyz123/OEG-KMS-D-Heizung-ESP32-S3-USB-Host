@@ -1,0 +1,472 @@
+{
+  "0_userdata.0.Heizung.Analyse_Zeitraum": {
+    "name": "Heizung Analyse Zeitraum (Minuten)",
+    "role": "level",
+    "states": {
+      "10080": "7 Tage",
+      "1440": "24 h",
+      "360": "6 h",
+      "4320": "3 Tage"
+    },
+    "type": "number",
+    "unit": "min"
+  },
+  "0_userdata.0.Heizung.Aussen_Mittel_heute": {
+    "name": "Aussentemperatur Mittel heute",
+    "role": "value",
+    "type": "number",
+    "unit": "°C"
+  },
+  "0_userdata.0.Heizung.Bivalenzpunkt_10kW": {
+    "name": "Aussentemp., ab der die WP nicht mehr reicht",
+    "role": "value",
+    "type": "number",
+    "unit": "°C"
+  },
+  "0_userdata.0.Heizung.Energie_heute": {
+    "name": "Brenner Energie heute",
+    "role": "value",
+    "type": "number",
+    "unit": "kWh"
+  },
+  "0_userdata.0.Heizung.Heizenergie_heute": {
+    "name": "Waerme heute Heizung (ohne WW)",
+    "role": "value",
+    "type": "number",
+    "unit": "kWh"
+  },
+  "0_userdata.0.Heizung.Heizlast_Norm": {
+    "influxdb": {
+      "changesMinDelta": 0.05,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizlast bei Normaussentemperatur (Regression)",
+    "role": "value",
+    "type": "number",
+    "unit": "kW"
+  },
+  "0_userdata.0.Heizung.Heizlast_Norm_DG": {
+    "influxdb": {
+      "changesMinDelta": 0.05,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizlast nach Dachausbau bei Normaussentemperatur",
+    "role": "value",
+    "type": "number",
+    "unit": "kW"
+  },
+  "0_userdata.0.Heizung.Laufzeit_heute": {
+    "name": "Brenner Laufzeit heute",
+    "role": "value",
+    "type": "number",
+    "unit": "h"
+  },
+  "0_userdata.0.Heizung.Leistung_15min": {
+    "influxdb": {
+      "changesMinDelta": 0.05,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Brenner Ø Leistung letzte 15 min",
+    "role": "value",
+    "type": "number",
+    "unit": "kW"
+  },
+  "0_userdata.0.Heizung.Leistung_1h": {
+    "influxdb": {
+      "changesMinDelta": 0.05,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Brenner Ø Leistung letzte Stunde",
+    "role": "value",
+    "type": "number",
+    "unit": "kW"
+  },
+  "0_userdata.0.Heizung.Oel_heute": {
+    "name": "Heizoel heute (geschaetzt)",
+    "role": "value",
+    "type": "number",
+    "unit": "l"
+  },
+  "0_userdata.0.Heizung.Regression_Tage": {
+    "name": "Anzahl Tage in der Regression",
+    "role": "value",
+    "type": "number",
+    "unit": ""
+  },
+  "0_userdata.0.Heizung.Starts_heute": {
+    "name": "Brenner Starts heute",
+    "role": "value",
+    "type": "number",
+    "unit": ""
+  },
+  "0_userdata.0.Heizung.Tag_Aussen_Mittel": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": false,
+      "changesRelogInterval": 0,
+      "debounce": 1000
+    },
+    "name": "Tageswert Aussentemperatur Mittel",
+    "role": "value",
+    "type": "number",
+    "unit": "°C"
+  },
+  "0_userdata.0.Heizung.Tag_Heizenergie": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": false,
+      "changesRelogInterval": 0,
+      "debounce": 1000
+    },
+    "name": "Tageswert Waerme Heizung",
+    "role": "value",
+    "type": "number",
+    "unit": "kWh"
+  },
+  "0_userdata.0.Heizung.Tag_Heizleistung": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": false,
+      "changesRelogInterval": 0,
+      "debounce": 1000
+    },
+    "name": "Tageswert Ø Heizleistung",
+    "role": "value",
+    "type": "number",
+    "unit": "kW"
+  },
+  "0_userdata.0.Heizung.Tag_Laufzeit": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": false,
+      "changesRelogInterval": 0,
+      "debounce": 1000
+    },
+    "name": "Tageswert Brennerlaufzeit",
+    "role": "value",
+    "type": "number",
+    "unit": "h"
+  },
+  "0_userdata.0.Heizung.Tag_Starts": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": false,
+      "changesRelogInterval": 0,
+      "debounce": 1000
+    },
+    "name": "Tageswert Brennerstarts",
+    "role": "value",
+    "type": "number",
+    "unit": ""
+  },
+  "0_userdata.0.Heizung.Tag_WW_Energie": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": false,
+      "changesRelogInterval": 0,
+      "debounce": 1000
+    },
+    "name": "Tageswert Waerme Warmwasser",
+    "role": "value",
+    "type": "number",
+    "unit": "kWh"
+  },
+  "0_userdata.0.Heizung.Tageswerte": {
+    "name": "Tageswerte (JSON, fuer Regression)",
+    "role": "json",
+    "type": "string"
+  },
+  "0_userdata.0.Heizung.WP_Bedarf": {
+    "influxdb": {
+      "changesMinDelta": 0.05,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Benoetigte WP-Leistung bei θNA (inkl. WW)",
+    "role": "value",
+    "type": "number",
+    "unit": "kW"
+  },
+  "0_userdata.0.Heizung.WP_Bewertung": {
+    "name": "Bewertung Waermepumpe",
+    "role": "text",
+    "type": "string"
+  },
+  "0_userdata.0.Heizung.WW_Energie_heute": {
+    "name": "Waerme heute Warmwasser",
+    "role": "value",
+    "type": "number",
+    "unit": "kWh"
+  },
+  "mqtt.0.oeg_kmsd.boiler_set": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung Kessel Soll",
+    "role": "variable",
+    "type": "number",
+    "unit": "°C"
+  },
+  "mqtt.0.oeg_kmsd.cmd": {
+    "name": "oeg_kmsd/cmd",
+    "role": "variable",
+    "type": "string"
+  },
+  "mqtt.0.oeg_kmsd.dhw_set": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung Warmwasser Soll",
+    "role": "variable",
+    "type": "number",
+    "unit": "°C"
+  },
+  "mqtt.0.oeg_kmsd.flow_set": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung Vorlauf Soll Mischerkreis",
+    "role": "variable",
+    "type": "number",
+    "unit": "°C"
+  },
+  "mqtt.0.oeg_kmsd.manual": {
+    "name": "oeg_kmsd/manual",
+    "role": "variable",
+    "type": "number"
+  },
+  "mqtt.0.oeg_kmsd.r58": {
+    "influxdb": {
+      "changesMinDelta": 1,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung Register 58 (Pumpe)",
+    "role": "variable",
+    "type": "number",
+    "unit": "%"
+  },
+  "mqtt.0.oeg_kmsd.relay.r1": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung R1 Brenner",
+    "role": "variable",
+    "type": "number"
+  },
+  "mqtt.0.oeg_kmsd.relay.r2": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung R2 Pumpe Mischerkreis (FBH)",
+    "role": "variable",
+    "type": "number"
+  },
+  "mqtt.0.oeg_kmsd.relay.r3": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung R3 Mischer auf",
+    "role": "variable",
+    "type": "number"
+  },
+  "mqtt.0.oeg_kmsd.relay.r4": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung R4 Mischer zu",
+    "role": "variable",
+    "type": "number"
+  },
+  "mqtt.0.oeg_kmsd.relay.r5": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung R5 Warmwasser-Ladepumpe",
+    "role": "variable",
+    "type": "number"
+  },
+  "mqtt.0.oeg_kmsd.relay.r6": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung R6 Solarpumpe",
+    "role": "variable",
+    "type": "number"
+  },
+  "mqtt.0.oeg_kmsd.relay.r7": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung R7 Pumpe Direktheizkreis",
+    "role": "variable",
+    "type": "number"
+  },
+  "mqtt.0.oeg_kmsd.relay.r8": {
+    "influxdb": {
+      "changesMinDelta": 0,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung R8 nicht belegt",
+    "role": "variable",
+    "type": "number"
+  },
+  "mqtt.0.oeg_kmsd.relays": {
+    "name": "oeg_kmsd/relays",
+    "role": "variable",
+    "type": "number"
+  },
+  "mqtt.0.oeg_kmsd.scan": {
+    "name": "oeg_kmsd/scan",
+    "role": "variable",
+    "type": "string"
+  },
+  "mqtt.0.oeg_kmsd.state": {
+    "name": "oeg_kmsd/state",
+    "role": "variable",
+    "type": "string"
+  },
+  "mqtt.0.oeg_kmsd.status": {
+    "name": "oeg_kmsd/status",
+    "role": "variable",
+    "type": "string"
+  },
+  "mqtt.0.oeg_kmsd.t1": {
+    "influxdb": {
+      "changesMinDelta": 0.2,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung Solarkollektor T1",
+    "role": "variable",
+    "type": "number",
+    "unit": "°C"
+  },
+  "mqtt.0.oeg_kmsd.t1_set": {
+    "influxdb": {
+      "changesMinDelta": 0.2,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung Kollektor Soll T1",
+    "role": "variable",
+    "type": "number",
+    "unit": "°C"
+  },
+  "mqtt.0.oeg_kmsd.t2": {
+    "influxdb": {
+      "changesMinDelta": 0.2,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung Aussentemperatur T2",
+    "role": "variable",
+    "type": "number",
+    "unit": "°C"
+  },
+  "mqtt.0.oeg_kmsd.t2_set": {
+    "influxdb": {
+      "changesMinDelta": 0.2,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung Aussentemperatur gedaempft T2",
+    "role": "variable",
+    "type": "number",
+    "unit": "°C"
+  },
+  "mqtt.0.oeg_kmsd.t3": {
+    "influxdb": {
+      "changesMinDelta": 0.2,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung Oelkessel T3",
+    "role": "variable",
+    "type": "number",
+    "unit": "°C"
+  },
+  "mqtt.0.oeg_kmsd.t4": {
+    "influxdb": {
+      "changesMinDelta": 0.2,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung Vorlauf Mischerkreis (FBH) T4",
+    "role": "variable",
+    "type": "number",
+    "unit": "°C"
+  },
+  "mqtt.0.oeg_kmsd.t5": {
+    "influxdb": {
+      "changesMinDelta": 0.2,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung Warmwasser oben T5",
+    "role": "variable",
+    "type": "number",
+    "unit": "°C"
+  },
+  "mqtt.0.oeg_kmsd.t6": {
+    "influxdb": {
+      "changesMinDelta": 0.2,
+      "changesOnly": true,
+      "changesRelogInterval": 600,
+      "debounce": 1000
+    },
+    "name": "Heizung Warmwasser unten (Solar) T6",
+    "role": "variable",
+    "type": "number",
+    "unit": "°C"
+  }
+}

@@ -18,7 +18,12 @@ OEG KMS-D ──Mini-USB── [USB] ESP32-S3-DevKit [UART] ── PC (Flashen/L
 | `firmware/` | PlatformIO-Projekt (Arduino, ESP32-S3): USB-Host-CDC-Treiber, Modbus ASCII, MQTT, OTA |
 | `iobroker/Heizung_Brennerleistung.js` | JavaScript-Adapter-Skript: Wärmeleistung aus Brennerlaufzeit, Tageswerte, Heizlast-Schätzung, Bewertung Wärmepumpe |
 | `iobroker/vis/*.json` | vis-1-Seiten „Heizung“, „Heizung_Schema“, „Heizung_Analyse“ (Widget-Export) |
-| `tools/` | `scan.py` (Register-Scan über MQTT), `mqtt_sub.py` (MQTT mitlesen, ohne Abhängigkeiten) |
+| `iobroker/datapoints.json` | Namen, Einheiten und InfluxDB-Logging aller Heizungs-Datenpunkte |
+| `tools/iobroker_setup.py` | richtet Skript, Datenpunkte, Logging und vis-Seiten in ioBroker ein (mit Probelauf) |
+| `tools/` | außerdem `scan.py` (Register-Scan über MQTT), `mqtt_sub.py` (MQTT mitlesen) |
+| `docs/WIEDERAUFBAU.md` | **Schritt-für-Schritt-Anleitung für den Neuaufbau** |
+
+**Neu aufsetzen?** → [docs/WIEDERAUFBAU.md](docs/WIEDERAUFBAU.md)
 
 ## Hardware
 
@@ -76,5 +81,5 @@ eigener Register-Scan.
 - Skript `Heizung_Brennerleistung.js` (JavaScript-Adapter): schreibt nach `0_userdata.0.Heizung.*`.
   Annahmen oben im Skript anpassen (Brennerleistung/Düse, Wirkungsgrad, Normaußentemperatur,
   Personen, WP-Leistung bei θNA). Ersetzt keine Heizlastberechnung nach DIN EN 12831.
-- vis-1-Seiten: JSON-Dateien enthalten die Seiteneinstellungen und Widgets einer View; zum Import
-  in `vis-views.json` des Projekts unter dem Seitennamen einfügen (vorher sichern).
+- Einrichtung und Wiederherstellung: `python tools/iobroker_setup.py --host <ip>:8081 [--apply]`
+  (Details in [docs/WIEDERAUFBAU.md](docs/WIEDERAUFBAU.md)).
