@@ -26,6 +26,7 @@ const R1 = S + 'relay.r1', R5 = S + 'relay.r5', T2 = S + 't2';
 const HIST = 'influxdb.0';
 const BASE = '0_userdata.0.Heizung.';
 const DAY = 24 * 3600 * 1000;
+const LOG_START = new Date(2026, 10, 7, 18, 35).getTime();   // Beginn der Relais-Aufzeichnung
 
 const NUM = {
     Leistung_1h:            ['Waermeleistung Ø letzte Stunde', 'kW'],
@@ -161,7 +162,7 @@ async function closeDay(dayStart) {
     return true;
 }
 
-function regression() {
+async function regression() {
     const pts = loadDays().filter(d => d.t < HEIZGRENZE).map(d => [d.t, d.qh / 24]);
     setState(BASE + 'Regression_Tage', pts.length, true);
     const ww = PERSONS * 0.25;
@@ -182,10 +183,25 @@ function regression() {
         const est = pts.filter(p => p[0] < THETA_I - 3).map(p => p[1] * (THETA_I - THETA_NA) / (THETA_I - p[0]));
         if (est.length) pNA = est.reduce((s, v) => s + v, 0) / est.length;
         txt = `vorläufig (${pts.length} Tag${pts.length > 1 ? 'e' : ''}, Hochrechnung)`;
+    } else {
+        // noch kein voller Tag: alle bisherigen Daten (max. 48 h) hochrechnen, sobald >= 6 h vorliegen
+        const now = Date.now(), start = Math.max(LOG_START, now - 2 * DAY), hours = (now - start) / 3600000;
+        if (hours >= 6) {
+            const st = await stats(start, now);
+            if (st.tMean !== null && st.tMean < THETA_I - 3) {
+                pNA = (st.qHeat / hours) * (THETA_I - THETA_NA) / (THETA_I - st.tMean);
+                txt = `vorläufig aus ${r1(hours)} h Daten (Ø außen ${r1(st.tMean)} °C) – wird mit jedem Tag genauer`;
+            }
+        }
     }
     if (pNA === null) {
-        setState(BASE + 'WP_Bewertung', 'Noch keine vollständigen Tage – Bewertung ab dem ersten vollen Tag (Logging seit 07.11.2026).', true);
+        setState(BASE + 'WP_Bewertung', 'Noch zu wenig Daten – erste vorläufige Bewertung nach 6 h Aufzeichnung (seit 07.11.2026 18:35).', true);
         return;
+    }
+    if (pts.length < 3) {
+        // Bivalenzpunkt im Verhaeltnismodell: Heizlast proportional zu (θi - θa)
+        const tBiv = THETA_I - (THETA_I - THETA_NA) * (WP_KW - ww) / (pNA + DG_ZUSATZ_KW);
+        setState(BASE + 'Bivalenzpunkt_10kW', r1(tBiv), true);
     }
     const pDG = pNA + DG_ZUSATZ_KW;
     const need = pDG + ww;
@@ -204,10 +220,11 @@ async function dailyJob() {
     // alle noch fehlenden vollen Tage der letzten 30 Tage abschliessen (auch Nachtrag nach Neustart)
     const today = midnightOf(Date.now());
     for (let d = today - 30 * DAY; d < today; d += DAY) await closeDay(d);
-    regression();
+    await regression();
 }
 
 schedule('* * * * *', () => { updateLive().catch(e => log('Heizung live: ' + e, 'warn')); });
 schedule('5 0 * * *', () => { dailyJob().catch(e => log('Heizung Tag: ' + e, 'warn')); });
+schedule('7 * * * *', () => { regression().catch(e => log('Heizung Regression: ' + e, 'warn')); });  // stuendlich (vorlaeufige Werte)
 on({ id: R1, change: 'ne' }, () => setTimeout(() => updateLive().catch(() => {}), 3000));
 setTimeout(() => { updateLive().catch(() => {}); dailyJob().catch(e => log('Heizung Tag: ' + e, 'warn')); }, 5000);
