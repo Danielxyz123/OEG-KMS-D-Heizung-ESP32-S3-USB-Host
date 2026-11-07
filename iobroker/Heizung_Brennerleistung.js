@@ -14,9 +14,10 @@ const BURNER_KW = 27;     // Feuerungsleistung Brenner (Typenschild); genauer: a
 const ETA = 0.90;         // Kesselwirkungsgrad (Niedertemperaturkessel 0,88..0,92)
 const OIL_KWH_PER_L = 10; // Heizwert Heizoel EL
 const THETA_I = 20;       // Innentemperatur fuer Hochrechnung (konservativ)
-const THETA_NA = -12;     // Normaussentemperatur am Standort (DIN/TS 12831-1, PLZ) -> anpassen
-const PERSONS = 3;        // Personen im Haushalt (WW-Zuschlag 0,25 kW/Person)
-const WP_KW = 10;         // betrachtete Waermepumpe: Heizleistung bei θNA laut Datenblatt!
+const THETA_NA = -10;     // Normaussentemperatur 49328 Melle (DIN/TS 12831-1, vom Fachbetrieb bestaetigen)
+const PERSONS = 4;        // 2 Erwachsene, 2 Kinder (WW-Zuschlag 0,25 kW/Person)
+const WP_KW = 10;         // Bosch Compress 5800i/6800i AW 10: 10,0 kW bei A-10/W35
+const DG_ZUSATZ_KW = 1.9; // Dachausbau: DG +2..2,8 kW, Decke EG->Dachboden entfaellt -0,5 kW (Mitte)
 const HEIZGRENZE = 15;    // Tage mit Mittel >= 15 °C nicht in die Regression
 // --------------------------------------------------------------------------------
 
@@ -42,9 +43,10 @@ const NUM = {
     Tag_Aussen_Mittel:      ['Tageswert Aussentemperatur Mittel', '°C'],
     Tag_Laufzeit:           ['Tageswert Brennerlaufzeit', 'h'],
     Tag_Starts:             ['Tageswert Brennerstarts', ''],
-    Heizlast_Norm:          ['Heizlast bei Normaussentemperatur (Regression)', 'kW'],
-    WP_Bedarf:              ['Benoetigte WP-Leistung bei θNA (inkl. WW)', 'kW'],
-    Bivalenzpunkt_10kW:     ['Aussentemp., ab der die WP nicht mehr reicht', '°C'],
+    Heizlast_Norm:          ['Heizlast EG heute bei Normaussentemperatur (Regression)', 'kW'],
+    Heizlast_Norm_DG:       ['Heizlast nach Dachausbau bei Normaussentemperatur', 'kW'],
+    WP_Bedarf:              ['Benoetigte WP-Leistung bei θNA nach Dachausbau (inkl. WW)', 'kW'],
+    Bivalenzpunkt_10kW:     ['Aussentemp., bis zu der die WP nach Dachausbau allein reicht', '°C'],
     Regression_Tage:        ['Anzahl Tage in der Regression', ''],
 };
 for (const [k, [name, unit]] of Object.entries(NUM)) {
@@ -169,8 +171,11 @@ function regression() {
         const sxy = pts.reduce((s, p) => s + (p[0] - mx) * (p[1] - my), 0), sxx = pts.reduce((s, p) => s + (p[0] - mx) ** 2, 0);
         const b = sxy / sxx, a = my - b * mx;
         pNA = a + b * THETA_NA;
-        const tBiv = b < 0 ? (WP_KW - ww - a) / b : null;
-        setState(BASE + 'Bivalenzpunkt_10kW', tBiv === null ? 0 : r1(tBiv), true);
+        // Bivalenzpunkt fuer den Fall nach Dachausbau (DG-Zuschlag skaliert mit der Temperaturdifferenz)
+        const dg = (t) => DG_ZUSATZ_KW * (THETA_I - t) / (THETA_I - THETA_NA);
+        let tBiv = null;
+        for (let t = 15; t >= -25; t -= 0.1) { if (a + b * t + dg(t) + ww > WP_KW) { tBiv = t; break; } }
+        setState(BASE + 'Bivalenzpunkt_10kW', tBiv === null ? -99 : r1(tBiv), true);
         txt = `Regression aus ${n} Tagen`;
     } else if (pts.length >= 1) {
         // Fallback: Verhaeltnisverfahren je Tag, Mittelwert
@@ -182,15 +187,17 @@ function regression() {
         setState(BASE + 'WP_Bewertung', 'Noch keine vollständigen Tage – Bewertung ab dem ersten vollen Tag (Logging seit 07.11.2026).', true);
         return;
     }
-    const need = pNA + ww;
+    const pDG = pNA + DG_ZUSATZ_KW;
+    const need = pDG + ww;
     setState(BASE + 'Heizlast_Norm', r1(pNA), true);
+    setState(BASE + 'Heizlast_Norm_DG', r1(pDG), true);
     setState(BASE + 'WP_Bedarf', r1(need), true);
-    let verdict;
-    if (need <= WP_KW * 0.9) verdict = `reicht (Reserve ${r1(WP_KW - need)} kW)`;
-    else if (need <= WP_KW * 1.1) verdict = 'knapp – an den kältesten Tagen Heizstab (monoenergetisch)';
-    else verdict = `reicht allein nicht – Heizstab/Bivalenz nötig (Fehlbetrag ${r1(need - WP_KW)} kW)`;
+    const judge = (n) => n <= WP_KW * 0.9 ? `reicht (Reserve ${r1(WP_KW - n)} kW)`
+        : n <= WP_KW * 1.1 ? 'knapp – an den kältesten Tagen Heizstab (monoenergetisch)'
+        : `reicht allein nicht – Heizstab/Bivalenz nötig (Fehlbetrag ${r1(n - WP_KW)} kW)`;
     setState(BASE + 'WP_Bewertung',
-        `${WP_KW} kW WP: ${verdict}. Heizlast bei ${THETA_NA} °C ≈ ${r1(pNA)} kW + WW ${r1(ww)} kW = ${r1(need)} kW (${txt}).`, true);
+        `Nach Dachausbau: ${judge(need)} – ${r1(pDG)} kW Heizlast + ${r1(ww)} kW WW = ${r1(need)} kW. ` +
+        `EG heute: ${r1(pNA)} kW (${judge(pNA + ww)}). Basis: ${txt}, ${THETA_NA} °C.`, true);
 }
 
 async function dailyJob() {
