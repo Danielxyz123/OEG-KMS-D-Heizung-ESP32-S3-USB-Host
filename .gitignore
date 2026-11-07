@@ -1,0 +1,12 @@
+# PlatformIO
+.pio/
+.vscode/
+
+# lokale Zugangsdaten
+firmware/include/secrets.h
+firmware/secrets.ini
+
+# Python
+__pycache__/
+*.pyc
+venv/
