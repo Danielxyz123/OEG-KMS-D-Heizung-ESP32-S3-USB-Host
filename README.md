@@ -67,7 +67,13 @@ Modbus ASCII, Slave 128, 9600 7E1, Funktion 03.
 | 54–56 | Soll T6–T8 (−500 = keiner) | /10 °C |
 | 34 | Handbetrieb-Bitmaske | Bit0 = R1 |
 | 35 | Relais-Bitmaske | Bit0 = R1 … Bit7 = R8 |
-| 1000–1199 | Einstellwerte P/S-Parameter (Zuordnung offen) | – |
+| 1000–1059 | vermutlich Service-Parameter S1–S3 (nicht bestätigt) | – |
+| 1160–1168 | P1.1–P1.9 Allgemeine Einstellungen | meist °C bzw. Code |
+| 1170 / 1171 | P2.1 Steilheit / P2.2 Parallelverschiebung Kreis 1 | /100 bzw. /10 K |
+| 1180–1185 | P3.1–P3.6 Kreis 2 / weitere Direktkreise | wie P2 |
+| 1190–1198 | P4.1–P4.9 Warmwasser | °C, s, min |
+
+Details, Kennlinien-Formel und Änderungsprotokoll: [docs/REGLERVERHALTEN.md](docs/REGLERVERHALTEN.md).
 
 Relais: R1 Brenner · R2 Pumpe Kreis 1 (FBH) · R3/R4 Mischer auf/zu · R5 WW-Ladepumpe ·
 R6 Solarpumpe (drehzahlgeregelt) · R7 Pumpe Direktkreis · R8 frei.
