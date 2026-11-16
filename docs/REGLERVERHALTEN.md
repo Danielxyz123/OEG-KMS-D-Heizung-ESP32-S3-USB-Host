@@ -20,8 +20,8 @@ am Display am 16.11.2026 erschien sofort in Register 1170/1171.
 | 1166 | P1.7 Intervall Temperaturaufzeichnung | min | 20 |
 | 1167 | P1.8 Töne | Code | 1 |
 | 1168 | P1.9 Erweiterte Temperaturanzeige | 0/1 | 1 |
-| **1170** | **P2.1 Steilheit Heizkurve Kreis 1** | **/100** | **55 → 0,55** (vorher 0,60) |
-| **1171** | **P2.2 Parallelverschiebung Kreis 1** | **/10 K** | **30 → +3,0 K** (vorher +2,0) |
+| **1170** | **P2.1 Steilheit Heizkurve Kreis 1** | **/100** | **50 → 0,50** (ursprünglich 0,60) |
+| **1171** | **P2.2 Parallelverschiebung Kreis 1** | **/10 K** | **42 → +4,2 K** (ursprünglich +2,0) |
 | 1172 | P2.3 Dauer Boost-Heizen | min | 0 |
 | 1173 | P2.4 Raumanhebung Boost | /10 K | 30 → 3,0 K |
 | 1180 | P3.1 Steilheit Kreis 2 (Direktkreis) | /100 | 70 → 0,70 |
@@ -61,7 +61,10 @@ VL_soll = 15,8 + P2.2 + P2.1 × (18 − T2_gedämpft)
 - Der Wert wird auf 0,1 K gerundet. Zwischen −1,7 und +7,9 °C ist die Kurve linear (RMS 0,04 K).
 
 Kontrolle: Alte Einstellung (0,60 / +2,0) → `15,8 + 2 + 0,6 × 18 = 28,6` bei 0 °C, gemessen 28,6.
-Neue Einstellung (0,55 / +3,0) bei 6,7 °C → `15,8 + 3 + 0,55 × 11,3 = 25,0`, gemessen 24,9/25,0.
+Einstellung 0,55 / +3,0 bei 6,7 °C → `15,8 + 3 + 0,55 × 11,3 = 25,0`, gemessen 24,9/25,0.
+Einstellung 0,50 / +4,2 bei 6,6 °C → `15,8 + 4,2 + 0,50 × 11,4 = 25,7`, gemessen 25,7.
+
+Die Steilheit ließ sich am Display offenbar nur in 0,05er-Schritten einstellen (0,48 → 0,50).
 
 ### Änderung vorausberechnen
 
@@ -78,6 +81,7 @@ Beispiel: Kurve um 0 °C drehen, sodass bei 8 °C der Vorlauf um 1 K steigt:
 | 0,55 / +3,0 (ab 16.11. 18:01) | 28,7 | 24,3 | 34,2 | 20,4 |
 | 0,48 / +4,2 (Ziel: 0 °C gleich, 8 °C +1 K) | 28,6 | 24,8 | 33,4 | 21,4 |
 | 0,50 / +4,0 (falls nur 0,05er-Schritte) | 28,8 | 24,8 | 33,8 | 21,3 |
+| **0,50 / +4,2 (ab 16.11. 18:16)** | **29,0** | **25,0** | **34,0** | **21,5** |
 
 ## Raumtemperatur Wohnzimmer (Sensor 1, ab 14.11.2026)
 
@@ -91,3 +95,4 @@ Die Kurve war also minimal zu steil. Deshalb wird sie um 0 °C gedreht. Faustwer
 |---|---|---|
 | bis 16.11.2026 | P2.1 = 0,60, P2.2 = +2,0 | Ausgangszustand |
 | 16.11.2026 18:01 | P2.1 = 0,55, P2.2 = +3,0 | an milden Tagen zu kalt, bei 0 °C passend |
+| 16.11.2026 18:16 | P2.1 = 0,50, P2.2 = +4,2 | Ziel: gegenüber 0,60/+2,0 bei 8 °C +1 K Vorlauf, bei 0 °C gleich (erreicht: +1,2 K / +0,4 K) |
