@@ -112,10 +112,12 @@ Legionellenschutz in den Daten bestätigt: `dhw_set` stand am Fr 13.11. 05:13–
 | 1093 | S5.14 min. Kessel-Rücklauftemperatur (laut Anleitung) | **41** (bis 21.11.2026: 50) | 50 |
 | 1094–1098 | S5.15–S5.18 Umschaltung/Abgas | 1,0, 0, 130, 200 | Werkseinstellungen |
 
-Am 21.11.2026 wurde gleichzeitig die Mindest-Kesseltemperatur auf 41 °C gestellt (Kessel-Soll im
-Heizbetrieb 39 → 41 °C) und 1093 von 50 auf 41 geändert. Ob 1093 die Mindest-Kesseltemperatur ist
-oder (wie in der Anleitung) die Rücklaufanhebung, ist offen: Vorher stand 1093 auf 50, der Kessel-Soll
-aber auf 39 °C.
+**Register 1093 = S5.14 bestätigt** ([Display-Foto](img/regler-s5-14.webp) 21.11.2026: „S5.14 Minimale Temp. der Rücklauf in den
+Kessel (°C)“, MIN 10, MAX 90, DEF 50). Das ist die Rücklaufanhebung, **nicht** die Mindest-Kesseltemperatur.
+Ohne Rücklauffühler (T7/T8 frei) und ohne Bypasspumpe im Schema 107b wirkt S5.14 hier vermutlich nicht.
+Am 21.11. wurde S5.14 von 50 auf 41 gestellt. Der Kessel-Soll im Heizbetrieb stieg gleichzeitig von
+39 auf 41 °C. Woher diese Änderung kommt, ist noch offen (Temperaturmenü des Kessels?), mit S5.14
+lässt sie sich nicht erklären (vorher S5.14 = 50, Kessel-Soll trotzdem 39 °C).
 
 S5.8–S5.11 (1087–1090 = 0) stehen nicht auf den gelesenen Seiten.
 
