@@ -116,8 +116,10 @@ Legionellenschutz in den Daten bestätigt: `dhw_set` stand am Fr 13.11. 05:13–
 Kessel (°C)“, MIN 10, MAX 90, DEF 50). Das ist die Rücklaufanhebung, **nicht** die Mindest-Kesseltemperatur.
 Ohne Rücklauffühler (T7/T8 frei) und ohne Bypasspumpe im Schema 107b wirkt S5.14 hier vermutlich nicht.
 Am 21.11. wurde S5.14 von 50 auf 41 gestellt. Der Kessel-Soll im Heizbetrieb stieg gleichzeitig von
-39 auf 41 °C. Woher diese Änderung kommt, ist noch offen (Temperaturmenü des Kessels?), mit S5.14
-lässt sie sich nicht erklären (vorher S5.14 = 50, Kessel-Soll trotzdem 39 °C).
+39 auf 41 °C. Das kommt **nicht** von S5.14, sondern aus dem **Temperaturmenü** des Reglers
+(Mindest-Kesseltemperatur, dort am 21.11. von 39 auf 41 °C gestellt). Dieser Wert ist in den gelesenen
+Registern 0–59 und 1000–1199 nicht enthalten, sichtbar ist er nur über den Kessel-Soll (Register 51).
+Empfehlung: S5.14 wieder auf den Werkswert 50 stellen.
 
 S5.8–S5.11 (1087–1090 = 0) stehen nicht auf den gelesenen Seiten.
 
@@ -125,7 +127,8 @@ S5.8–S5.11 (1087–1090 = 0) stehen nicht auf den gelesenen Seiten.
 
 - **Kessel-Soll (`boiler_set`) ist im Heizbetrieb konstant 39 °C.** Rechnerisch bräuchte Kreis 1 nur
   Vorlauf-Soll + S5.3 = 29 + 5 ≈ 34 °C. Die 39 °C sind also eine Mindest-Kesseltemperatur (im Diagramm
-  „Tkmin“). Sie steht nicht in den gelesenen Registern, vermutlich im Menü Temperatureinstellungen.
+  „Tkmin“). Sie wird im **Temperaturmenü** eingestellt (bestätigt 21.11.2026, seitdem 41 °C) und steht
+  nicht in den gelesenen Registern.
 - **Bei WW-Ladung** gilt Kessel-Soll = WW-Soll + S5.5 = 52 + 10 = 62 °C (Legionellenschutz: 66 + 10 = 76 °C).
 - **Brennerschaltpunkte ohne WW-Ladung:** EIN im Mittel bei Kessel-Soll − 4,5 K (≈ 34,5 °C),
   AUS bei Soll + 6,6 K (≈ 45,6 °C, inklusive Nachheizen). Das passt zu S5.2 = 8 K (±4 K) plus Überschwingen.
@@ -273,4 +276,4 @@ sind nachgetragen.
 | 18.11.2026 14:11 | P2.1 = 0,50, P2.2 = +5,2 | Ziel 20 °C im Wohnzimmer bei jeder Außentemperatur (bei Frost 19,5 °C, mild ≈ 19,5 °C erwartet); +1 K Vorlauf überall. Bestätigt: Register 1171 = 52, Vorlauf-Soll 26,0 °C bei T2_gedämpft 7,8 °C |
 | 20.11.2026 (Kontrolle) | keine Änderung, bleibt 0,50 / +5,2 | Wohnzimmer eingeschwungen bei 19,7–19,8 °C, gleich bei T2_gedämpft 7–8 °C und ≈ 3 °C (Steilheit bestätigt, +1 K Vorlauf ≈ +0,6 K Raum). Temperatur reicht, kein weiterer Schritt auf +5,7 |
 | 21.11.2026 09:45 | P2.1 = 0,40, P2.2 = +6,1 | Grund nicht protokolliert. Wirkung gegenüber 0,50/+5,2: Drehung um +8 °C (dort ±0), bei 0 °C −0,8 K, bei −10 °C −1,8 K Vorlauf. Vorlauf-Soll 29,2 °C bei 0 °C bestätigt (Formel 29,2) |
-| 21.11.2026 ≈ 11:50 | S5.2 = 12 K (vorher 8), Mindest-Kesseltemperatur 41 °C (vorher 39), Register 1093 = 41 (vorher 50), P3.1/P3.2 = 0,40 / +5,0 (vorher 0,70 / −1,0) | weniger Brennerstarts. Kreis 2 vorbereitet für spätere Fußbodenheizung im Dachgeschoss, derzeit ohne Wirkung |
+| 21.11.2026 ≈ 11:50 | S5.2 = 12 K (vorher 8), Mindest-Kesseltemperatur 41 °C im Temperaturmenü (vorher 39), S5.14 Rücklauf-Mindesttemperatur 41 (vorher 50, ohne Wirkung, zurückstellen empfohlen), P3.1/P3.2 = 0,40 / +5,0 (vorher 0,70 / −1,0) | weniger Brennerstarts. Kreis 2 vorbereitet für spätere Fußbodenheizung im Dachgeschoss, derzeit ohne Wirkung |
