@@ -1,0 +1,26 @@
+{
+  "Heizung_Brennerleistung": {
+    "name": "Heizung_Brennerleistung",
+    "enabled": true
+  },
+  "HeizkurveAuswertung": {
+    "name": "HeizkurveAuswertung",
+    "enabled": true
+  },
+  "Heizung_Regler_Parameter": {
+    "name": "Heizung_Regler_Parameter",
+    "enabled": true
+  },
+  "Heizung_Warmwasser_Zapfung": {
+    "name": "Heizung_Warmwasser_Zapfung",
+    "enabled": true
+  },
+  "Heizung_Heizlast_Vergleich": {
+    "name": "Heizung_Heizlast_Vergleich",
+    "enabled": true
+  },
+  "HeizungMqttDisplay": {
+    "name": "HeizungMqttDisplay",
+    "enabled": true
+  }
+}

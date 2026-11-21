@@ -45,18 +45,27 @@ copy secrets.ini.example secrets.ini                 # OTA-Passwort frei waehlen
 ```
 pip install websocket-client
 python tools/iobroker_setup.py --host 192.168.178.44:8081                                   # Probelauf
-python tools/iobroker_setup.py --host 192.168.178.44:8081 --apply --nav-view CurrentData    # ausfuehren
+python tools/iobroker_setup.py --host 192.168.178.44:8081 --apply                          # ausfuehren
 ```
 
 Das Skript ist mehrfach ausführbar und richtet ein:
-- JavaScript-Skript `Heizung_Brennerleistung` (Wärmeleistung, Tageswerte, Heizlast-Schätzung)
+- die JavaScript-Skripte aus `iobroker/scripts.json`: `Heizung_Brennerleistung` (Wärmeleistung,
+  Tageswerte, Heizlast), `HeizkurveAuswertung`, `Heizung_Regler_Parameter` (Mitschrift P2.x),
+  `Heizung_Warmwasser_Zapfung`, `Heizung_Heizlast_Vergleich`, `HeizungMqttDisplay`
 - Datenpunkt `0_userdata.0.Heizung.Analyse_Zeitraum`
 - Namen, Einheiten und InfluxDB-Logging für alle Datenpunkte aus `iobroker/datapoints.json`
-- vis-Seiten `Heizung`, `Heizung_Schema`, `Heizung_Analyse` (vorher Sicherung von `vis-views.json`)
-- Button „Heizung“ auf der Startseite (`--nav-view`, Position mit `--nav-pos links,oben`)
+  (`0_userdata.0.Heizung.*`, `mqtt.0.oeg_kmsd.*`, `mqtt.0.sensor1.*`)
 
 Fehlen Datenpunkte, weil der ESP32 noch nicht sendet, nennt das Skript sie: später erneut ausführen.
-Danach den vis-Editor neu laden.
+
+**Visualisierung:** Seit 21.11.2026 ist die Visu eine HTML-App (`vis.0/main/app/*.html`, je Ansicht
+ein Vollbild-Iframe) und liegt im Repo **IO-Broker-haus-energie-heizung**. Sie wird dort eingespielt.
+`iobroker_setup.py` fasst vis nur mit `--vis-legacy` an. Das importiert die alten Widget-Seiten
+(`iobroker/vis/*.json`, Stand 07.11.2026) und **überschreibt die neue Visu**.
+
+**Stand der Skripte:** Die Dateien in `iobroker/` sind ein Abzug vom 21.11.2026. Der laufende Stand
+aller ioBroker-Skripte wird im Repo IO-Broker-haus-energie-heizung (`scripts/`) gepflegt. Vor einem
+Wiederaufbau dort nachsehen, ob es neuere Fassungen gibt.
 
 ## 4. Annahmen der Heizlast-Auswertung
 
@@ -64,8 +73,9 @@ Stehen oben in `iobroker/Heizung_Brennerleistung.js`; nach Änderung `iobroker_s
 
 | Konstante | Wert | Quelle |
 |---|---|---|
-| `BURNER_KW` | 27 kW | Typenschild; genauer: Düse (gph) und Pumpendruck aus dem Wartungsprotokoll |
-| `ETA` | 0,90 | Niedertemperaturkessel |
+| `OIL_KG_H` → `BURNER_KW` | 2,12 kg/h → 25,1 kW | Wartungsprotokoll 28.06.2020 (Sieger TT11, Düse 0,55 gph 60° HTD) |
+| `ETA` | 0,914 | Messprotokoll 02.06.2020 (Abgasverlust 8,6 %) |
+| `FLAME_DELAY_S` | 25 s | je Start ohne Flamme (Vorspülen), gemessen 20.11.2026 |
 | `THETA_NA` | −10 °C | 49328 Melle (DIN/TS 12831-1) |
 | `PERSONS` | 4 | Warmwasserzuschlag 0,25 kW/Person |
 | `WP_KW` | 10 kW | Bosch Compress AW 10 bei A−10/W35 |
@@ -77,7 +87,8 @@ Stehen oben in `iobroker/Heizung_Brennerleistung.js`; nach Änderung `iobroker_s
 - **Nur lesen.** Die Firmware schreibt nie in den Regler. Schreiben ginge über Modbus-Funktion 16,
   ist aber nicht erforscht (laut ced2git: Register 6 = Betriebsart).
 - **Register-Scan**: `python tools/scan.py 192.168.178.44 0 199 scan.json` (über MQTT,
-  ESP32 muss laufen). Einstellwerte liegen ab Register 1000, Zuordnung noch offen.
+  ESP32 muss laufen). Einstellwerte liegen ab Register 1000, Zuordnung siehe
+  [REGLERVERHALTEN.md](REGLERVERHALTEN.md).
 - **Rücklauf**: kein Fühler am Regler (T7/T8 frei). Abgelesen am Zeigerthermometer.
   Nachrüstbar als DS18B20 am ESP32 oder als T8 (Parameter S1.5).
 - **vis 1 aktiv**, nicht vis-2. Bindings mit Formeln dürfen im Ausgabetext kein `;` enthalten

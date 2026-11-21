@@ -43,8 +43,8 @@ Reihenfolge und Werte passen zur S2-Tabelle der Anleitung (S. 43/44).
 |---|---|---|---|
 | 1020 | S2.1 Einfluss der Raumtemperatur-Abweichung | /10 | 10 → 1,0 |
 | 1021 | S2.2 Einfluss Raumfühler T1/T8 | Code | 1 (AUTO) |
-| 1022 | S2.3 Einfluss Raumgerät DD2+ | Code | 0 |
-| 1023 | S2.4 Pumpenbetrieb | Code | 4 |
+| 1022 | S2.3 Einfluss Raumgerät DD2+ | Code | 0 (Anleitung nennt nur 1–5, kein DD2+ vorhanden) |
+| 1023 | S2.4 Pumpenbetrieb | Code | 4 (= PROG. P2 bei Zählung ab 1; Pumpe R2 lief trotzdem 99,98 % der Zeit) |
 | 1024 | S2.5 Minimale Vorlauftemperatur | °C | 20 |
 | 1025 | S2.6 Maximale Vorlauftemperatur | °C | 50 (Werk 45 für Fußboden) |
 | 1026 | S2.7 Totzone Mischerregelung | ? | 6 (Bereich laut Anleitung 1,0–3,0, Skalierung unklar) |
@@ -57,6 +57,74 @@ Reihenfolge und Werte passen zur S2-Tabelle der Anleitung (S. 43/44).
 | 1035 | S2.16 Nachlauf Umwälzpumpe | min | 5 |
 
 S3 (Kreis 2) ab 1040 ist gleich aufgebaut (z. B. 1045 = 85 = max. Vorlauf Direktkreis).
+
+**Gesamtaufteilung 1000–1199** (je 20 Register, Abgleich mit der Anleitung S. 40–48, 21.11.2026):
+1000 S1 · 1020 S2 · 1040 S3 · 1060 S4 · 1080 S5 · 1100 S6 · 1120 F (Estrichtrocknung, vermutet) ·
+1160 P1 · 1170 P2 · 1180 P3 · 1190 P4. Auswahl-Codes sind gemischt gezählt: P1.5, P1.8, S1.3, S1.7, S4.5 ab 0,
+S1.4–S1.9 und die S4-Auswahllisten laut Anleitung ab 1, S5.6 ab 0.
+
+#### S1 Allgemein (ab 1000)
+
+| Register | Parameter | Wert | Bemerkung |
+|---|---|---|---|
+| 1000 | S1.1 Hydraulikschema | 33 | interner Index (Display zeigt 107b) |
+| 1001 | S1.2 Code Service-Ebene | 1 | Werkseinstellung 0001 |
+| 1002 | S1.3 Fühlertyp | 0 | PT1000 |
+| 1003 | S1.4 Funktion T1 | 1 | RF1, im Schema 107b ist T1 aber fest der Kollektor → ohne Wirkung |
+| 1004 | S1.5 Funktion T8 | 1 | RF2, T8 nicht angeschlossen |
+| 1005 | S1.6 Digitaleingang T1/T6 | 1 | Werkseinstellung |
+| 1006 | S1.7 Blockierschutz | 0 | aus |
+| 1007–1008 | S1.8/S1.9 Fernaktivierung | 2 / 3 | Werkseinstellung |
+| **1009** | **S1.10 Gebäudetyp (Zeitkonstante)** | **3 h** | **Dämpfung der Außentemperatur → `t2_set`** |
+| 1012–1019 | S1.13–S1.20 Fühlerabgleich T1–T8 | 0 | kein Offset |
+
+#### S4 Warmwasser (ab 1060)
+
+| Register | Parameter | Wert | Werk |
+|---|---|---|---|
+| 1060 | S4.1 Funktion Ausgang R5 | 1 (Schema) | 1 |
+| 1061 | S4.2 Hysterese WW | 10 K | 6 |
+| 1062 | S4.3 max. WW-Temperatur | 85 °C | 80 |
+| 1063 | S4.4 Überhitzungsschutz | 0 (aus) | 0 |
+| **1064–1066** | **S4.5–S4.7 Legionellenschutz** | **ein, Freitag, 05 Uhr** | aus, Fr, 5 |
+| 1067 | S4.8 min. WW-Temp. bei Festbrennstoff | 3 (55 °C) | 3 |
+| 1068 | S4.9 Funktion Zirkulationsausgang | 1 (Zirkulation) | 1 |
+| 1069 | S4.10 WW-Soll bei Solar/Festbrennstoff | 80 °C | 70 |
+| 1070 | S4.11 min. Umgebungstemp. WW-Wärmepumpe | 16 °C | 16 |
+| 1071 | S4.12 Nachlauf WW-Ladepumpe | 5 min | 5 |
+
+Legionellenschutz in den Daten bestätigt: `dhw_set` stand am Fr 13.11. 05:13–05:35 und am Fr 20.11.
+05:13–05:43 auf 66 °C (sonst 52 °C), der Kessel-Soll dabei auf 76 °C (= WW + S5.5).
+
+#### S5 Kessel (ab 1080)
+
+| Register | Parameter | Wert | Werk |
+|---|---|---|---|
+| 1080 | S5.1 max. Kesseltemperatur | 90 °C | 90 |
+| **1081** | **S5.2 Brenner-Hysterese** | **8 K** | 8 |
+| 1082 | S5.3 Kesselüberhöhung Kreis 1 | 5 K | 5 |
+| 1083 | S5.4 Kesselüberhöhung Kreis 2 | 5 K | 5 |
+| 1084 | S5.5 Kesselüberhöhung WW-Ladung | 10 K | 10 |
+| 1085 | S5.6 Kessel-Bereitschaft auf Mindesttemperatur | 2 (laut Anleitung „AUS“ bei Zählung ab 0) | 2 |
+| 1086 | S5.7 Brenner-Abschaltung bei Festbrennstoff | 4 | 4 |
+| 1091–1098 | S5.12–S5.18 Festbrennstoff/Umschaltung/Abgas | 77, 90, 50, 1,0, 0, 130, 200 | Werkseinstellungen |
+
+S5.8–S5.11 (1087–1090 = 0) stehen nicht auf den gelesenen Seiten.
+
+### Kesselverhalten (gemessen 17.–21.11.2026)
+
+- **Kessel-Soll (`boiler_set`) ist im Heizbetrieb konstant 39 °C.** Rechnerisch bräuchte Kreis 1 nur
+  Vorlauf-Soll + S5.3 = 29 + 5 ≈ 34 °C. Die 39 °C sind also eine Mindest-Kesseltemperatur (im Diagramm
+  „Tkmin“). Sie steht nicht in den gelesenen Registern, vermutlich im Menü Temperatureinstellungen.
+- **Bei WW-Ladung** gilt Kessel-Soll = WW-Soll + S5.5 = 52 + 10 = 62 °C (Legionellenschutz: 66 + 10 = 76 °C).
+- **Brennerschaltpunkte ohne WW-Ladung:** EIN im Mittel bei Kessel-Soll − 4,5 K (≈ 34,5 °C),
+  AUS bei Soll + 6,6 K (≈ 45,6 °C, inklusive Nachheizen). Das passt zu S5.2 = 8 K (±4 K) plus Überschwingen.
+- **Folge:** ≈ 37 Starts pro Tag mit je 6–7 min Laufzeit. Weniger Starts gäbe es nur mit größerer Hysterese
+  (S5.2) oder niedrigerer Mindest-Kesseltemperatur. Beides nur nach den Vorgaben des Kesselherstellers ändern
+  (Sieger TT11, Kondensation/Taupunkt).
+- **Mischer:** T4 folgt dem Vorlauf-Soll im Mittel auf −0,02 K (Streuung 0,65 K), in 4 Tagen 29 Impulse
+  „auf“ (R3) und 35 „zu“ (R4). R7 (Direktkreis, deaktiviert) und R6 (Solar) schalten kaum.
+- **ESP/USB-Verbindung:** `oeg_kmsd/status` seit 18.11. durchgehend „online“.
 Die Register 1400–1799 enthalten bei diesem Modell **keine** Min/Max-Werte (anders als beim KS2W),
 sondern Flags (1, 33, 257, 289 …).
 
@@ -75,7 +143,8 @@ T2_gedämpft −1,7 … +8,0 °C), RMS 0,05 K, größte Abweichung 0,18 K. Die e
 `15,8 + P2.2 + P2.1 × (18 − T)` (aus zwei Einstellungen) lag bei 0,60 um −0,08 K und bei 0,40
 um +0,13 K daneben. Bei Steilheit 0,50 sind beide Formeln gleich.
 
-- **T2_gedämpft** = Register 50 (`t2_set`), nicht die rohe Außentemperatur.
+- **T2_gedämpft** = Register 50 (`t2_set`), nicht die rohe Außentemperatur. Gedämpft wird mit der
+  Gebäude-Zeitkonstante S1.10 = 3 h (Register 1009).
 - **P2.2 wirkt 1:1** auf den Vorlauf: +1 K Parallelverschiebung = +1 K Vorlauf bei jeder Außentemperatur.
   Gemessen am 16.11. um 18:01:36, als nur P2.2 geändert war: Vorlauf-Soll 24,5 → 25,5 °C.
 - **Die Steilheit dreht die Kurve um T2_gedämpft ≈ 17,3 °C** (bestimmt aus den Wechseln 0,60 → 0,55

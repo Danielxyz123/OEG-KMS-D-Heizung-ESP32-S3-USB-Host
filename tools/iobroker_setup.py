@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
 """Richtet die Heizungs-Integration in ioBroker ein (idempotent, mehrfach ausfuehrbar).
 
-  1. JavaScript-Skript  script.js.Heizung_Brennerleistung  anlegen/aktualisieren
+  1. JavaScript-Skripte aus iobroker/scripts.json (iobroker/<Name>.js) anlegen/aktualisieren
   2. Datenpunkt 0_userdata.0.Heizung.Analyse_Zeitraum anlegen
   3. Namen, Einheiten und InfluxDB-Logging aller Datenpunkte aus iobroker/datapoints.json setzen
-  4. vis-1-Seiten Heizung, Heizung_Schema, Heizung_Analyse in das vis-Projekt importieren
-     (vorher Sicherung von vis-views.json; kollidierende Widget-IDs werden neu nummeriert)
-  5. optional: Button "Heizung" auf einer Startseite (--nav-view)
+  4. NUR mit --vis-legacy: alte vis-1-Seiten (Widget-Version vom 07.11.2026) Heizung,
+     Heizung_Schema, Heizung_Analyse importieren, optional Button "Heizung" (--nav-view)
+
+Die aktuelle Visualisierung (HTML-App unter vis.0/main/app/ mit Iframe-Ansichten) liegt seit
+21.11.2026 im Repo IO-Broker-haus-energie-heizung und wird dort eingespielt. Ohne --vis-legacy
+fasst dieses Skript vis nicht an, damit die neue Visu nicht ueberschrieben wird.
 
 Ohne --apply wird nur angezeigt, was passieren wuerde.
 
   python tools/iobroker_setup.py --host 192.168.178.44:8081
-  python tools/iobroker_setup.py --host 192.168.178.44:8081 --apply --nav-view CurrentData
+  python tools/iobroker_setup.py --host 192.168.178.44:8081 --apply
 
 Voraussetzungen in ioBroker: Adapter admin, mqtt (Broker), influxdb, javascript, vis, flot,
 vis-justgage. Die mqtt.0.oeg_kmsd.*-Datenpunkte entstehen erst, wenn der ESP32 sendet –
@@ -23,7 +26,6 @@ import websocket
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IOB = os.path.join(ROOT, "iobroker")
-SCRIPT_ID = "script.js.Heizung_Brennerleistung"
 RANGE_ID = "0_userdata.0.Heizung.Analyse_Zeitraum"
 VIEWS = ["Heizung", "Heizung_Schema", "Heizung_Analyse"]
 
@@ -81,26 +83,31 @@ def main():
     ap.add_argument("--nav-view", help="vorhandene vis-Seite, auf die ein Button 'Heizung' kommt (z. B. CurrentData)")
     ap.add_argument("--nav-pos", default="633,478", help="Position des Buttons links,oben in px")
     ap.add_argument("--apply", action="store_true", help="Aenderungen wirklich schreiben")
+    ap.add_argument("--vis-legacy", action="store_true",
+                    help="alte vis-Seiten (Widget-Version) importieren – ueberschreibt die neue HTML-Visu!")
     a = ap.parse_args()
     io = IoB(a.host)
     do = a.apply
     say = lambda s: print(("  " if do else "  [Probe] ") + s)
 
-    # 1. Skript
-    src = open(os.path.join(IOB, "Heizung_Brennerleistung.js"), encoding="utf-8").read()
-    cur = io.obj(SCRIPT_ID)
-    if cur and cur["common"].get("source") == src:
-        say("Skript ist aktuell")
-    else:
-        say(("aktualisiere" if cur else "lege an") + f" {SCRIPT_ID}")
+    # 1. Skripte
+    scripts = json.load(open(os.path.join(IOB, "scripts.json"), encoding="utf-8"))
+    for sname, smeta in scripts.items():
+        sid = "script.js." + sname
+        src = open(os.path.join(IOB, sname + ".js"), encoding="utf-8").read()
+        cur = io.obj(sid)
+        if cur and cur["common"].get("source", "").replace("\r\n", "\n") == src:
+            say(f"Skript {sname} ist aktuell")
+            continue
+        say(("aktualisiere" if cur else "lege an") + f" {sid}")
         if do:
             if cur:
-                io.call("extendObject", SCRIPT_ID, {"common": {"source": src, "enabled": True}})
+                io.call("extendObject", sid, {"common": {"source": src, "enabled": smeta.get("enabled", True)}})
             else:
-                io.call("setObject", SCRIPT_ID, {"type": "script", "native": {}, "common": {
-                    "name": "Heizung_Brennerleistung", "expert": True, "engineType": "Javascript/js",
+                io.call("setObject", sid, {"type": "script", "native": {}, "common": {
+                    "name": smeta.get("name", sname), "expert": True, "engineType": "Javascript/js",
                     "engine": "system.adapter.javascript.0", "debug": False, "verbose": False,
-                    "enabled": True, "source": src}})
+                    "enabled": smeta.get("enabled", True), "source": src}})
 
     # 2. Zeitraum-Datenpunkt
     dps = json.load(open(os.path.join(IOB, "datapoints.json"), encoding="utf-8"))
@@ -138,7 +145,11 @@ def main():
         print(f"  HINWEIS: {len(missing)} Datenpunkte fehlen noch (ESP32 sendet noch nicht?) – "
               f"Skript spaeter erneut ausfuehren:\n    " + "\n    ".join(missing[:12]) + (" …" if len(missing) > 12 else ""))
 
-    # 4./5. vis
+    # 4. vis (nur alte Widget-Version, nur auf ausdruecklichen Wunsch)
+    if not a.vis_legacy:
+        say("vis wird nicht angefasst (aktuelle Visu: Repo IO-Broker-haus-energie-heizung)")
+        print("Fertig." if do else "Probelauf beendet – mit --apply ausfuehren.")
+        return
     path = f"{a.vis_project}/vis-views.json"
     raw = io.read_file("vis.0", path)
     views = json.loads(raw)

@@ -16,10 +16,11 @@ OEG KMS-D ──Mini-USB── [USB] ESP32-S3-DevKit [UART] ── PC (Flashen/L
 | Ordner | Inhalt |
 |---|---|
 | `firmware/` | PlatformIO-Projekt (Arduino, ESP32-S3): USB-Host-CDC-Treiber, Modbus ASCII, MQTT, OTA |
-| `iobroker/Heizung_Brennerleistung.js` | JavaScript-Adapter-Skript: Wärmeleistung aus Brennerlaufzeit, Tageswerte, Heizlast-Schätzung, Bewertung Wärmepumpe |
-| `iobroker/vis/*.json` | vis-1-Seiten „Heizung“, „Heizung_Schema“, „Heizung_Analyse“ (Widget-Export) |
-| `iobroker/datapoints.json` | Namen, Einheiten und InfluxDB-Logging aller Heizungs-Datenpunkte |
-| `tools/iobroker_setup.py` | richtet Skript, Datenpunkte, Logging und vis-Seiten in ioBroker ein (mit Probelauf) |
+| `iobroker/*.js`, `scripts.json` | Heizungs-Skripte für den JavaScript-Adapter (Abzug 21.11.2026; laufender Stand im Repo IO-Broker-haus-energie-heizung) |
+| `iobroker/vis/*.json` | **alte** vis-1-Seiten (Widget-Version 07.11.2026). Die aktuelle Visu (HTML-App) liegt im Repo IO-Broker-haus-energie-heizung |
+| `iobroker/datapoints.json` | Namen, Einheiten und InfluxDB-Logging aller Heizungs-Datenpunkte (inkl. Wohnzimmer-Sensor) |
+| `tools/iobroker_setup.py` | richtet Skripte, Datenpunkte und Logging in ioBroker ein (mit Probelauf). Alte vis-Seiten nur mit `--vis-legacy` |
+| `docs/REGLERVERHALTEN.md` | Registerzuordnung der Einstellwerte, Heizkurven-Formel, Kesselverhalten, Änderungsprotokoll |
 | `tools/` | außerdem `scan.py` (Register-Scan über MQTT), `mqtt_sub.py` (MQTT mitlesen) |
 | `docs/WIEDERAUFBAU.md` | **Schritt-für-Schritt-Anleitung für den Neuaufbau** |
 
@@ -61,13 +62,17 @@ Modbus ASCII, Slave 128, 9600 7E1, Funktion 03.
 | 44–45 | T7/T8 (nicht angeschlossen → 309 °C) | /10 °C |
 | 49 | Soll T1 (Kollektor) | /10 °C |
 | 50 | T2 gedämpfte Außentemperatur | /10 °C |
-| 51 | Soll T3 Kessel (bei WW-Ladung = WW-Soll + 10 K) | /10 °C |
+| 51 | Soll T3 Kessel (Heizbetrieb konstant 39 °C = Mindest-Kesseltemp., bei WW-Ladung = WW-Soll + S5.5 10 K) | /10 °C |
 | 52 | Soll T4 Vorlauf Kreis 1 | /10 °C |
 | 53 | Soll T5 Warmwasser | /10 °C |
 | 54–56 | Soll T6–T8 (−500 = keiner) | /10 °C |
 | 34 | Handbetrieb-Bitmaske | Bit0 = R1 |
 | 35 | Relais-Bitmaske | Bit0 = R1 … Bit7 = R8 |
-| 1000–1059 | vermutlich Service-Parameter S1–S3 (nicht bestätigt) | – |
+| 1000–1019 | S1 Allgemein (u. a. 1009 = S1.10 Zeitkonstante Außentemperatur, 3 h) | Code / h |
+| 1020–1035 | S2 Kreis 1 (Raumeinfluss, min./max. Vorlauf, Mischer-PID) | siehe Doku |
+| 1040–1055 | S3 Kreis 2 | wie S2 |
+| 1060–1071 | S4 Warmwasser (Hysterese, Legionellenschutz Fr 05 Uhr) | °C / Code |
+| 1080–1098 | S5 Kessel (max. 90 °C, Hysterese 8 K, Überhöhungen) | °C |
 | 1160–1168 | P1.1–P1.9 Allgemeine Einstellungen | meist °C bzw. Code |
 | 1170 / 1171 | P2.1 Steilheit / P2.2 Parallelverschiebung Kreis 1 | /100 bzw. /10 K |
 | 1180–1185 | P3.1–P3.6 Kreis 2 / weitere Direktkreise | wie P2 |
@@ -84,7 +89,7 @@ eigener Register-Scan.
 ## ioBroker
 
 - `mqtt.0` als Broker; Datenpunkte `mqtt.0.oeg_kmsd.*`, Logging in `influxdb.0`.
-- Skript `Heizung_Brennerleistung.js` (JavaScript-Adapter): schreibt nach `0_userdata.0.Heizung.*`.
+- Skripte in `iobroker/` (JavaScript-Adapter), u. a. `Heizung_Brennerleistung.js`: schreibt nach `0_userdata.0.Heizung.*`.
   Annahmen oben im Skript anpassen (Brennerleistung/Düse, Wirkungsgrad, Normaußentemperatur,
   Personen, WP-Leistung bei θNA). Ersetzt keine Heizlastberechnung nach DIN EN 12831.
 - Einrichtung und Wiederherstellung: `python tools/iobroker_setup.py --host <ip>:8081 [--apply]`
