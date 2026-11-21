@@ -25,8 +25,8 @@ am Display am 16.11.2026 erschien sofort in Register 1170/1171.
 | **1171** | **P2.2 Parallelverschiebung Kreis 1** | **/10 K** | **42 → +4,2 K** (ursprünglich +2,0) |
 | 1172 | P2.3 Dauer Boost-Heizen | min | 0 |
 | 1173 | P2.4 Raumanhebung Boost | /10 K | 30 → 3,0 K |
-| 1180 | P3.1 Steilheit Kreis 2 (Direktkreis) | /100 | 70 → 0,70 |
-| 1181 | P3.2 Parallelverschiebung Kreis 2 | /10 K | −10 → −1,0 K |
+| 1180 | P3.1 Steilheit Kreis 2 (Direktkreis) | /100 | 40 → 0,40 (bis 21.11.: 0,70) |
+| 1181 | P3.2 Parallelverschiebung Kreis 2 | /10 K | 50 → +5,0 K (bis 21.11.: −1,0) |
 | 1182 | P3.3 Dauer Boost-Heizen Kreis 2 | min | 0 |
 | 1183 | P3.4 Raumanhebung Boost Kreis 2 | /10 K | 30 → 3,0 K |
 | 1184 | P3.5 Steilheit weitere Direktkreise | /100 | 120 → 1,20 |
@@ -102,13 +102,20 @@ Legionellenschutz in den Daten bestätigt: `dhw_set` stand am Fr 13.11. 05:13–
 | Register | Parameter | Wert | Werk |
 |---|---|---|---|
 | 1080 | S5.1 max. Kesseltemperatur | 90 °C | 90 |
-| **1081** | **S5.2 Brenner-Hysterese** | **8 K** | 8 |
+| **1081** | **S5.2 Brenner-Hysterese** | **12 K** (bis 21.11.2026: 8) | 8 |
 | 1082 | S5.3 Kesselüberhöhung Kreis 1 | 5 K | 5 |
 | 1083 | S5.4 Kesselüberhöhung Kreis 2 | 5 K | 5 |
 | 1084 | S5.5 Kesselüberhöhung WW-Ladung | 10 K | 10 |
 | 1085 | S5.6 Kessel-Bereitschaft auf Mindesttemperatur | 2 (laut Anleitung „AUS“ bei Zählung ab 0) | 2 |
 | 1086 | S5.7 Brenner-Abschaltung bei Festbrennstoff | 4 | 4 |
-| 1091–1098 | S5.12–S5.18 Festbrennstoff/Umschaltung/Abgas | 77, 90, 50, 1,0, 0, 130, 200 | Werkseinstellungen |
+| 1091–1092 | S5.12/S5.13 Festbrennstoff | 77, 90 | Werkseinstellungen |
+| 1093 | S5.14 min. Kessel-Rücklauftemperatur (laut Anleitung) | **41** (bis 21.11.2026: 50) | 50 |
+| 1094–1098 | S5.15–S5.18 Umschaltung/Abgas | 1,0, 0, 130, 200 | Werkseinstellungen |
+
+Am 21.11.2026 wurde gleichzeitig die Mindest-Kesseltemperatur auf 41 °C gestellt (Kessel-Soll im
+Heizbetrieb 39 → 41 °C) und 1093 von 50 auf 41 geändert. Ob 1093 die Mindest-Kesseltemperatur ist
+oder (wie in der Anleitung) die Rücklaufanhebung, ist offen: Vorher stand 1093 auf 50, der Kessel-Soll
+aber auf 39 °C.
 
 S5.8–S5.11 (1087–1090 = 0) stehen nicht auf den gelesenen Seiten.
 
@@ -126,6 +133,21 @@ S5.8–S5.11 (1087–1090 = 0) stehen nicht auf den gelesenen Seiten.
 - **Mischer:** T4 folgt dem Vorlauf-Soll im Mittel auf −0,02 K (Streuung 0,65 K), in 4 Tagen 29 Impulse
   „auf“ (R3) und 35 „zu“ (R4). R7 (Direktkreis, deaktiviert) und R6 (Solar) schalten kaum.
 - **ESP/USB-Verbindung:** `oeg_kmsd/status` seit 18.11. durchgehend „online“.
+
+### Frostschutz und Heizkreis 2 (Direktkreis, derzeit ungenutzt)
+
+- **P1.3 = 1 °C:** Sinkt T2 unter etwa +1 °C, läuft die Pumpe des Direktkreises **R7 im Frostschutz**,
+  obwohl der Kreis deaktiviert ist. Gemessen: 10.11. 5,9 h (T2 −0,2 °C), 14.11. 10,9 h und
+  14./15.11. 18,7 h (bis −0,9 °C), 17.11. 12,5 h. Der Werkswert von P1.3 wäre −10 °C.
+- **Kessel-Soll bleibt dabei unverändert** (14./15.11. durchgehend 39 °C): Der Direktkreis hebt den
+  Kessel nicht an, die Mindest-Kesseltemperatur ist höher als sein Bedarf.
+- **Heizkurve Kreis 2 (P3.1/P3.2) seit 21.11.2026: 0,40 / +5,0** (vorbereitet für eine spätere
+  Fußbodenheizung im Dachgeschoss). Auch mit Tag-Sollwert 18 °C ergäbe das bei −10 °C etwa 32 °C,
+  mit Kesselüberhöhung S5.4 (5 K) 37 °C, also unter den 41 °C Mindest-Kesseltemperatur. **Kein Einfluss
+  auf Kessel oder Frostschutz.**
+- Hinweis für später: Kreis 2 ist im Schema 107b ein **Direktkreis ohne Mischer**. Sein Vorlauf ist die
+  Kesseltemperatur (41–49 °C), für eine Fußbodenheizung zu warm. Mit der Wärmepumpe (Frühjahr 2027)
+  wird das ohnehin neu aufgebaut.
 Die Register 1400–1799 enthalten bei diesem Modell **keine** Min/Max-Werte (anders als beim KS2W),
 sondern Flags (1, 33, 257, 289 …).
 
@@ -249,3 +271,4 @@ sind nachgetragen.
 | 18.11.2026 14:11 | P2.1 = 0,50, P2.2 = +5,2 | Ziel 20 °C im Wohnzimmer bei jeder Außentemperatur (bei Frost 19,5 °C, mild ≈ 19,5 °C erwartet); +1 K Vorlauf überall. Bestätigt: Register 1171 = 52, Vorlauf-Soll 26,0 °C bei T2_gedämpft 7,8 °C |
 | 20.11.2026 (Kontrolle) | keine Änderung, bleibt 0,50 / +5,2 | Wohnzimmer eingeschwungen bei 19,7–19,8 °C, gleich bei T2_gedämpft 7–8 °C und ≈ 3 °C (Steilheit bestätigt, +1 K Vorlauf ≈ +0,6 K Raum). Temperatur reicht, kein weiterer Schritt auf +5,7 |
 | 21.11.2026 09:45 | P2.1 = 0,40, P2.2 = +6,1 | Grund nicht protokolliert. Wirkung gegenüber 0,50/+5,2: Drehung um +8 °C (dort ±0), bei 0 °C −0,8 K, bei −10 °C −1,8 K Vorlauf. Vorlauf-Soll 29,2 °C bei 0 °C bestätigt (Formel 29,2) |
+| 21.11.2026 ≈ 11:50 | S5.2 = 12 K (vorher 8), Mindest-Kesseltemperatur 41 °C (vorher 39), Register 1093 = 41 (vorher 50), P3.1/P3.2 = 0,40 / +5,0 (vorher 0,70 / −1,0) | weniger Brennerstarts. Kreis 2 vorbereitet für spätere Fußbodenheizung im Dachgeschoss, derzeit ohne Wirkung |

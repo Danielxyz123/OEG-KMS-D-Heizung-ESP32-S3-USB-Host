@@ -82,7 +82,7 @@ Abgasverlust, CO₂, Rußzahl.
 
 | Größe | Wert |
 |---|---|
-| Kessel-Soll Heizbetrieb | konstant 39 °C (Mindest-Kesseltemperatur) |
+| Kessel-Soll Heizbetrieb | konstant 39 °C (Mindest-Kesseltemperatur), seit 21.11. 41 °C mit S5.2 = 12 K |
 | Brenner EIN / AUS (ohne WW) | ≈ 34,5 °C / ≈ 45,6 °C (S5.2 = 8 K plus Nachheizen) |
 | Brennerstarts | ≈ 37 pro Tag, je 6–7 min Laufzeit |
 | Vorspülzeit ohne Flamme | ≈ 25 s je Start (`FLAME_DELAY_S`) |
@@ -113,3 +113,5 @@ Abgasverlust, CO₂, Rußzahl.
 | 28.06.2020 | Wartung: Düse 0,55 gph 60° HTD, Öldurchsatz 2,12 kg/h |
 | 07.11.2026 | Beginn der Aufzeichnung über ESP32/ioBroker |
 | 21.11.2026 | Typenschilder Kessel und Brenner dokumentiert |
+| 21.11.2026 ≈ 11:50 | Brenner-Hysterese S5.2 8 → 12 K, Mindest-Kesseltemperatur 39 → 41 °C (Details: REGLERVERHALTEN.md) |
+| März/April 2027 | Ölkessel und Brenner werden durch die Wärmepumpe ersetzt (geplant) |
