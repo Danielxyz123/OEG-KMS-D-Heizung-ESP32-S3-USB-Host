@@ -20,6 +20,7 @@ OEG KMS-D ──Mini-USB── [USB] ESP32-S3-DevKit [UART] ── PC (Flashen/L
 | `iobroker/vis/*.json` | **alte** vis-1-Seiten (Widget-Version 07.11.2026). Die aktuelle Visu (HTML-App) liegt im Repo IO-Broker-haus-energie-heizung |
 | `iobroker/datapoints.json` | Namen, Einheiten und InfluxDB-Logging aller Heizungs-Datenpunkte (inkl. Wohnzimmer-Sensor) |
 | `tools/iobroker_setup.py` | richtet Skripte, Datenpunkte und Logging in ioBroker ein (mit Probelauf). Alte vis-Seiten nur mit `--vis-legacy` |
+| `docs/ANLAGE.md` | Kessel Sieger TT 11, Brenner Sieger BS 1.1-28 (Typenschilder), Wartungswerte, Betriebsverhalten, Effizienz-Hebel |
 | `docs/REGLERVERHALTEN.md` | Registerzuordnung der Einstellwerte, Heizkurven-Formel, Kesselverhalten, Änderungsprotokoll |
 | `tools/` | außerdem `scan.py` (Register-Scan über MQTT), `mqtt_sub.py` (MQTT mitlesen) |
 | `docs/WIEDERAUFBAU.md` | **Schritt-für-Schritt-Anleitung für den Neuaufbau** |

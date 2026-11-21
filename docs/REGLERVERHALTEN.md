@@ -2,6 +2,7 @@
 
 Gemessen und ausgewertet am 16.11.2026 aus den InfluxDB-Daten ab 07.11.2026 (`flow_set`, `t2_set`)
 und aus Register-Scans über MQTT (nur lesend, `tools/scan.py`).
+Kessel, Brenner und Wartungswerte: [ANLAGE.md](ANLAGE.md).
 
 ## Einstellparameter in den Registern
 
