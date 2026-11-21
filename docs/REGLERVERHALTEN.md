@@ -76,8 +76,16 @@ S1.4–S1.9 und die S4-Auswahllisten laut Anleitung ab 1, S5.6 ab 0.
 | 1005 | S1.6 Digitaleingang T1/T6 | 1 | Werkseinstellung |
 | 1006 | S1.7 Blockierschutz | 0 | aus |
 | 1007–1008 | S1.8/S1.9 Fernaktivierung | 2 / 3 | Werkseinstellung |
-| **1009** | **S1.10 Gebäudetyp (Zeitkonstante)** | **3 h** | **Dämpfung der Außentemperatur → `t2_set`** |
+| **1009** | **S1.10 Gebäudetyp (Zeitkonstante)** | **3 h** | **Dämpfung der Außentemperatur → `t2_set`** (siehe unten) |
 | 1012–1019 | S1.13–S1.20 Fühlerabgleich T1–T8 | 0 | kein Offset |
+
+**Prüfung S1.10 (21.11.2026):** `t2_set` lässt sich aus `t2` mit einem Tiefpass erster Ordnung nachbilden.
+Am besten passt τ = 3,0 h (RMS 0,36 K; 2 h und 4 h je 0,47 K), die Einstellung wirkt also wie beschrieben.
+Ob 3 h zum Haus passen, wurde nachts (ohne Sonne, 14.–21.11., Niveau je Heizkurven-Abschnitt entfernt)
+geprüft: Das Wohnzimmer hängt kaum von der Differenz Außen − gedämpft ab (−0,06 K je K, r = −0,2,
+typische Differenz 0,9 K, maximal 4 K). Der Einfluss liegt also unter 0,2 K, die Raumtemperatur schwankt
+nachts nur um 0,07–0,24 K. **3 h passen, keine Änderung.** Erneut prüfen, wenn starke Wetterumschwünge
+(Frostfronten) in den Daten sind.
 
 #### S4 Warmwasser (ab 1060)
 
