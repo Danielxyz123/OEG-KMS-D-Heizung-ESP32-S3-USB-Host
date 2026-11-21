@@ -117,7 +117,7 @@ Legionellenschutz in den Daten bestätigt: `dhw_set` stand am Fr 13.11. 05:13–
 | 1085 | S5.6 Kessel-Bereitschaft auf Mindesttemperatur | 2 (laut Anleitung „AUS“ bei Zählung ab 0) | 2 |
 | 1086 | S5.7 Brenner-Abschaltung bei Festbrennstoff | 4 | 4 |
 | 1091–1092 | S5.12/S5.13 Festbrennstoff | 77, 90 | Werkseinstellungen |
-| 1093 | S5.14 min. Kessel-Rücklauftemperatur (laut Anleitung) | **41** (bis 21.11.2026: 50) | 50 |
+| 1093 | S5.14 min. Kessel-Rücklauftemperatur (laut Anleitung) | 50 (am 21.11.2026 kurz auf 41, wieder zurückgestellt) | 50 |
 | 1094–1098 | S5.15–S5.18 Umschaltung/Abgas | 1,0, 0, 130, 200 | Werkseinstellungen |
 
 **Register 1093 = S5.14 bestätigt** ([Display-Foto](img/regler-s5-14.webp) 21.11.2026: „S5.14 Minimale Temp. der Rücklauf in den
@@ -127,7 +127,7 @@ Am 21.11. wurde S5.14 von 50 auf 41 gestellt. Der Kessel-Soll im Heizbetrieb sti
 39 auf 41 °C. Das kommt **nicht** von S5.14, sondern aus dem **Temperaturmenü** des Reglers
 (Mindest-Kesseltemperatur, dort am 21.11. von 39 auf 41 °C gestellt). Dieser Wert ist in den gelesenen
 Registern 0–59 und 1000–1199 nicht enthalten, sichtbar ist er nur über den Kessel-Soll (Register 51).
-Empfehlung: S5.14 wieder auf den Werkswert 50 stellen.
+S5.14 wurde am selben Tag wieder auf den Werkswert 50 gestellt (Register 1093 = 50 geprüft).
 
 S5.8–S5.11 (1087–1090 = 0) stehen nicht auf den gelesenen Seiten.
 
@@ -284,4 +284,4 @@ sind nachgetragen.
 | 18.11.2026 14:11 | P2.1 = 0,50, P2.2 = +5,2 | Ziel 20 °C im Wohnzimmer bei jeder Außentemperatur (bei Frost 19,5 °C, mild ≈ 19,5 °C erwartet); +1 K Vorlauf überall. Bestätigt: Register 1171 = 52, Vorlauf-Soll 26,0 °C bei T2_gedämpft 7,8 °C |
 | 20.11.2026 (Kontrolle) | keine Änderung, bleibt 0,50 / +5,2 | Wohnzimmer eingeschwungen bei 19,7–19,8 °C, gleich bei T2_gedämpft 7–8 °C und ≈ 3 °C (Steilheit bestätigt, +1 K Vorlauf ≈ +0,6 K Raum). Temperatur reicht, kein weiterer Schritt auf +5,7 |
 | 21.11.2026 09:45 | P2.1 = 0,40, P2.2 = +6,1 | Grund nicht protokolliert. Wirkung gegenüber 0,50/+5,2: Drehung um +8 °C (dort ±0), bei 0 °C −0,8 K, bei −10 °C −1,8 K Vorlauf. Vorlauf-Soll 29,2 °C bei 0 °C bestätigt (Formel 29,2) |
-| 21.11.2026 ≈ 11:50 | S5.2 = 12 K (vorher 8), Mindest-Kesseltemperatur 41 °C im Temperaturmenü (vorher 39), S5.14 Rücklauf-Mindesttemperatur 41 (vorher 50, ohne Wirkung, zurückstellen empfohlen), P3.1/P3.2 = 0,40 / +5,0 (vorher 0,70 / −1,0) | weniger Brennerstarts. Kreis 2 vorbereitet für spätere Fußbodenheizung im Dachgeschoss, derzeit ohne Wirkung |
+| 21.11.2026 ≈ 11:50 | S5.2 = 12 K (vorher 8), Mindest-Kesseltemperatur 41 °C im Temperaturmenü (vorher 39), S5.14 kurz auf 41 und wieder auf 50 (ohne Wirkung), P3.1/P3.2 = 0,40 / +5,0 (vorher 0,70 / −1,0) | weniger Brennerstarts. Kreis 2 vorbereitet für spätere Fußbodenheizung im Dachgeschoss, derzeit ohne Wirkung |
