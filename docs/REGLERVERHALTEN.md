@@ -36,10 +36,29 @@ am Display am 16.11.2026 erschien sofort in Register 1170/1171.
 | 1197 | P4.8 Laufzeit Zirkulationspumpe | s | 300 |
 | 1198 | P4.9 Stillstand Zirkulationspumpe | min | 10 |
 
-Die Blöcke 1000–1059 sind vermutlich die Service-Parameter S1–S3 (S2 = Kreis 1, S3 = Kreis 2,
-z. B. 1025 = 50 und 1045 = 85, wahrscheinlich die maximale Vorlauftemperatur des jeweiligen Kreises).
-Das ist nicht bestätigt. Die Register 1400–1799 enthalten bei diesem Modell **keine** Min/Max-Werte
-(anders als beim KS2W), sondern Flags (1, 33, 257, 289 …).
+Die Blöcke 1000–1059 sind die Service-Parameter S1–S3. **S2 (Kreis 1) ab Register 1020 ist bestätigt**:
+Reihenfolge und Werte passen zur S2-Tabelle der Anleitung (S. 43/44).
+
+| Register | Parameter (Anleitung) | Skalierung | Wert 21.11.2026 |
+|---|---|---|---|
+| 1020 | S2.1 Einfluss der Raumtemperatur-Abweichung | /10 | 10 → 1,0 |
+| 1021 | S2.2 Einfluss Raumfühler T1/T8 | Code | 1 (AUTO) |
+| 1022 | S2.3 Einfluss Raumgerät DD2+ | Code | 0 |
+| 1023 | S2.4 Pumpenbetrieb | Code | 4 |
+| 1024 | S2.5 Minimale Vorlauftemperatur | °C | 20 |
+| 1025 | S2.6 Maximale Vorlauftemperatur | °C | 50 (Werk 45 für Fußboden) |
+| 1026 | S2.7 Totzone Mischerregelung | ? | 6 (Bereich laut Anleitung 1,0–3,0, Skalierung unklar) |
+| 1027–1029 | S2.8–S2.10 Mischer P/I/D | /10 | je 1,0 |
+| 1030 | S2.11 Maximale Fußbodentemperatur | °C | 25 |
+| 1031 | S2.12 Minimale Vorlauftemperatur Kühlbetrieb | /10 °C | 15,0 |
+| 1032 | S2.13 Verschiebung Einschaltschwelle Mischerregelung | °C | 0 |
+| 1033 | S2.14 Max. Differenz Vor-/Rücklauf | °C | 15 |
+| 1034 | S2.15 Konstante Vorlauftemperatur | 0/1 | 0 (witterungsgeführt) |
+| 1035 | S2.16 Nachlauf Umwälzpumpe | min | 5 |
+
+S3 (Kreis 2) ab 1040 ist gleich aufgebaut (z. B. 1045 = 85 = max. Vorlauf Direktkreis).
+Die Register 1400–1799 enthalten bei diesem Modell **keine** Min/Max-Werte (anders als beim KS2W),
+sondern Flags (1, 33, 257, 289 …).
 
 Im Bereich 0–59 stehen sehr wahrscheinlich die Raum-Sollwerte: Register 7 = 155 (15,5 °C, Nacht)
 und Register 8 = 180 (18,0 °C, Tag) für Kreis 1, Register 13/14 = 160/180 für Kreis 2. Nicht über
@@ -70,6 +89,34 @@ Einstellung 0,55 / +3,0 bei 6,7 °C → `15,8 + 3 + 0,55 × 11,3 = 25,0`, gemess
 Einstellung 0,50 / +4,2 bei 6,6 °C → `15,8 + 4,2 + 0,50 × 11,4 = 25,7`, gemessen 25,7.
 
 Die Steilheit ließ sich am Display offenbar nur in 0,05er-Schritten einstellen (0,48 → 0,50).
+
+### Abgleich mit der Anleitung (21.11.2026)
+
+Die Anleitung (S. 37/38, 43/44, 52) nennt **keine Formel**, sondern nur ein Diagramm mit den Kurven
+S = 0,2 … 2,2 (Vorlauf über Außentemperatur). Was sich prüfen lässt, passt zum gemessenen Verhalten:
+
+- **P2.1 Steilheit:** Die Anleitung empfiehlt für Fußbodenheizung 0,2–0,8 und Änderungen um höchstens
+  0,1–0,2 mit mindestens 24 h Abstand. Gemessen: Steigung der Kurve = P2.1 (0,60 → 0,615, 0,50 → 0,50).
+- **P2.2 Parallelverschiebung:** Die Anleitung beschreibt sie nur als Verschiebung der Heizkurve.
+  Gemessen: wirkt 1:1 auf den Vorlauf (16.11. 18:01: +1,0 K).
+- **Grenzen S2.5/S2.6:** Der Vorlauf wird auf 20 … 50 °C begrenzt. Im bisherigen Bereich (23–31 °C)
+  greift keine der Grenzen, die Formel gilt dort ohne Begrenzung.
+- **Raumeinfluss S2.1–S2.3:** Er wirkt nur mit einem Raumfühler (T1/T8 oder DD2+). T1 ist hier der
+  Kollektor, T8 ist nicht angeschlossen, ein DD2+ ist nicht vorhanden. Der Regler arbeitet deshalb **rein
+  witterungsgeführt**, passend zur Messung (Vorlauf hängt nur von T2_gedämpft ab). Sensor 1 im Wohnzimmer
+  hat keinen Einfluss auf den Regler.
+- **Abschaltung:** Liegt der berechnete Vorlauf nur noch wenige Kelvin über der Raumtemperatur oder nähert
+  sich die Außentemperatur dem Sollwert, schaltet der Kreis ab (Vorlauf-Soll 4 °C). Mit der aktuellen
+  Kurve passiert das erst bei T2_gedämpft deutlich über 15 °C.
+- **Raum-Sollwerte:** Laut Anleitung lässt sich die Raumtemperatur auch über die Tag-/Nacht-Temperatur
+  verstellen, sie gehen also in die Kurve ein. Der gemessene Drehpunkt 17,3 °C und die Konstante 16,2 °C
+  hängen sehr wahrscheinlich an der Tag-Temperatur (Register 8 = 18,0 °C). **Wird die Tag-Temperatur
+  geändert, gilt die Formel nicht mehr unverändert.** Prüfen lässt sich das mit +1 K Tag-Temperatur:
+  Der Vorlauf sollte dann um etwa 1 + P2.1 K steigen (bei 0,40 also ≈ 1,4 K).
+
+**Grenzen der Formel:** Bei Seltron-Reglern sind die Diagrammkurven für größere Steilheiten leicht
+gekrümmt. Die lineare Formel ist gemessen zwischen T2_gedämpft −1,7 und +8 °C. Bei starkem Frost
+(−10 °C und kälter) kann der echte Vorlauf etwas davon abweichen, das ist erst mit Frostdaten prüfbar.
 
 ### Änderung vorausberechnen
 
